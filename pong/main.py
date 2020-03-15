@@ -15,14 +15,14 @@ class PongPaddle(Widget):
             vx, vy = ball.velocity
             offset = (ball.center_y - self.center_y) / (self.height / 2)
             bounced = Vector(-1 * vx, vy)
-            vel = bounced * 1.1
+            vel = bounced * 2.5
             ball.velocity = vel.x, vel.y + offset
 
 
 class PongBall(Widget):    
     # velocity of the ball on x and y axis
-    velocity_x = NumericProperty(0)
-    velocity_y = NumericProperty(0)
+    velocity_x = NumericProperty(10)
+    velocity_y = NumericProperty(10)
 
     # referecelist property so we can use ball.velocity as
     # a shorthand, just like e.g. w.pos for w.x and w.y
@@ -39,7 +39,7 @@ class PongGame(Widget):
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
 
-    def serve_ball(self, vel=(4, 0)):
+    def serve_ball(self, vel=(10, 0)):
         self.ball.center = self.center
         self.ball.velocity = vel
     
