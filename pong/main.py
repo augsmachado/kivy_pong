@@ -15,14 +15,14 @@ class PongPaddle(Widget):
             vx, vy = ball.velocity
             offset = (ball.center_y - self.center_y) / (self.height / 2)
             bounced = Vector(-1 * vx, vy)
-            vel = bounced * 2.5
+            vel = bounced * 2.1
             ball.velocity = vel.x, vel.y + offset
 
 
 class PongBall(Widget):    
     # velocity of the ball on x and y axis
-    velocity_x = NumericProperty(10)
-    velocity_y = NumericProperty(10)
+    velocity_x = NumericProperty(60)
+    velocity_y = NumericProperty(60)
 
     # referecelist property so we can use ball.velocity as
     # a shorthand, just like e.g. w.pos for w.x and w.y
@@ -39,7 +39,8 @@ class PongGame(Widget):
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
 
-    def serve_ball(self, vel=(10, 0)):
+    # velocity of ball after collision
+    def serve_ball(self, vel=(100, 0)):
         self.ball.center = self.center
         self.ball.velocity = vel
     
@@ -58,11 +59,19 @@ class PongGame(Widget):
         # went of to a side to score point?
         if self.ball.x < self.x:
             self.player2.score += 1
-            self.serve_ball(vel=(4, 0))
+            self.serve_ball(vel=(100, 0))
         if self.ball.x > self.width:
             self.player1.score += 1
-            self.serve_ball(vel=(-4, 0))
+            self.serve_ball(vel=(-100, 0))
     
+    def on_touch_down(self, touch):
+        if super(PongGame, self).on_touch_down(touch):
+            return True
+        if not self.collide_point(touch.x, touch.y):
+            return False
+        print('You touched me!')
+        return True
+
     def on_touch_move(self, touch):
         if touch.x < self.width / 3:
             self.player1.center_y = touch.y
@@ -74,7 +83,7 @@ class PongApp(App):
     def build(self):
         game = PongGame()
         game.serve_ball()
-        Clock.schedule_interval(game.update, 1.0/60.0)
+        Clock.schedule_interval(game.update, 1.0/120.0) # frames per second
         return game
 
 
